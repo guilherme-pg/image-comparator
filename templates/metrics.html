@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang=“en”>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/standard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/metrics.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300&family=Rubik&display=swap" rel="stylesheet">
+
+    <title>Metrics</title>
+</head>
+<body>
+    <div class="side_column side_column_left">
+
+        <div class="redirect_button">
+            <div class="button_box">
+                <a id="button_home_redirection" href="http://127.0.0.1:8080/">Image Comparator</a>
+            </div>
+        </div>
+
+        <div class="redirect_button">
+            <div class="button_box">
+                <a id="button_metrics_redirection" href="http://127.0.0.1:8080/metrics">Used Metrics</a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="main_column">
+        <div class="title_zone">
+            <h1>Metrics and Techniques for Comparing Images</h1>
+        </div>
+
+
+        <div class="all_metrics_zone">
+            <div class="metric_zone">
+                <h3>Resize images</h3>
+                <p>Resizing the images is not always necessary for comparing or evaluating image similarity using the metrics mentioned above.</p>
+                <p>However, there are scenarios where resizing the images can be beneficial or even required.</p>
+            </div>
+
+            <div class="metric_zone">
+                <h3>Structural Similarity Index Measure (SSIM)</h3>
+                
+                <p>SSIM (Structural Similarity Index) is a widely used metric in image processing and computer vision to measure the similarity between two images.
+                    It takes into account the structural information and perceptual aspects of the images rather than just comparing pixel intensities.
+                    SSIM is designed to mimic human perception and is particularly useful when evaluating image quality or performing image comparison tasks.</p>
+                
+                <p>The SSIM algorithm compares three aspects of the images: luminance, contrast, and structure.
+                    It calculates a similarity index ranging from 0 to 1.
+                    A higher SSIM score implies a higher similarity between the images, where 1 indicates perfect similarity between the images.</p>
+                
+                <p>SSIM considers various factors that affect human perception, including luminance distortion, contrast distortion, and structural distortion.
+                    It is more robust to changes in brightness, contrast, and noise compared to simpler metrics like Mean Squared Error (MSE) or Peak Signal-to-Noise Ratio (PSNR).</p>
+                
+                <p>SSIM is widely used in applications such as image compression, image quality assessment, image
+                    restoration, and image registration. It provides a more comprehensive evaluation of image similarity and is especially useful when the goal is to compare images based on their visual appearance and human perception rather than pixel-level differences.</p>
+            </div>
+
+            <div class="metric_zone">
+                <h3>Mean Squared Error (MSE) and Root Mean Squared Error (RMSE)</h3>
+                <p>Commonly used metric to measure the average magnitude of the differences between predicted and actual values in a regression problem. </p>
+                <p>It provides a measure of the model's accuracy by quantifying the deviation between the predicted values and the ground truth values.</p>
+            </div>
+
+            <div class="metric_zone">
+                <h3>Histogram Comparison</h3>
+                <p>Histogram-based methods compare the distribution of pixel intensities in two images.</p>
+                <p>The result of histogram comparison is a value that indicates the similarity or dissimilarity between the histograms.</p>
+                <p>A lower value indicates greater similarity, while a higher value indicates greater dissimilarity.</p>
+            </div>
+
+            <div class="metric_zone">
+                <h3>Feature Extraction and Matching</h3>
+                <p>This approach involves extracting features from images (e.g., keypoints, descriptors) and then matching them between the two images.</p>
+                <p>Popular feature extraction algorithms include Scale-Invariant Feature Transform (SIFT), Speeded-Up Robust Features (SURF), and Oriented FAST and Rotated BRIEF (ORB).</p>
+            </div>
+
+            <div class="metric_zone">
+                <h3>Normalized Cross-Correlation (NCC)</h3>
+                <p>is a technique used to measure the similarity between two signals or images. It calculates the correlation coefficient between the two signals while taking into account their respective mean values and standard deviations.</p>
+            </div>
+
+            <div class="metric_zone">
+                <h3>Mutual Information (MI)</h3>
+                <p>is a measure of the statistical dependency between two random variables. In the context of comparing two images, MI can be used to quantify the similarity or correlation between the pixel intensities of the images. </p>
+                <p>The resulting Mutual Information value represents the similarity or correlation between the two images. Higher values indicate stronger dependence or similarity, while lower values indicate weaker or no dependence.</p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="side_column">
+
+    </div>
+</body>
+</html>

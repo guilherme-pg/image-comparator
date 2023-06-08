@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang=“en”>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/standard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/comparison.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300&family=Rubik&display=swap" rel="stylesheet">
+
+    <title>Comparison</title>
+</head>
+<body>
+    <main>
+
+        <div class="side_column side_column_left">
+    
+            <div class="redirect_button">
+                <div class="button_box">
+                    <a id="button_home_redirection" href="http://127.0.0.1:8080/">Image Comparator</a>
+                </div>
+            </div>
+    
+            <!--
+            <div class="redirect_button">
+                <div class="button_box">
+                    <a id="button_metrics_redirection" href="http://127.0.0.1:8080/metrics">Used Metrics</a>
+                </div>
+            </div>
+            -->
+    
+        </div>
+    
+        <div class="main_zone">
+            <div class="metric_zone">
+                <h2>Normal and Resized Image</h2>
+    
+                <div class="metric_image_zone">
+                    <img class="comparison_image"
+                         src="{{ url_for('static', filename='images/img_normal_size.jpg') }}"
+                         alt="Normal Size Image"
+                        title="Normal Size Image">
+                    
+                    <img class="comparison_image"
+                         src="{{ url_for('static', filename='images/img_resized.jpg') }}"
+                         alt="Resized Image"
+                         title="Resized Image">
+                </div>
+                
+                <div class="text_zone">
+                    <p>Resizing the images is not always necessary for comparing or evaluating image similarity using
+                        the metrics mentioned above.</p>
+                    <p>However, there are scenarios where resizing the images can be beneficial or even required.</p>
+                </div>
+            </div>
+            
+            <div class="metric_zone">
+                <h2>Control</h2>
+                
+                <div class="text_zone">
+                    <p>The control test allows to establish a baseline or reference point for comparison, enabling them
+                        to evaluate the effects of specific factors or interventions being studied.</p>
+                    <p>It provides a fundamental basis for reference points, minimizing confounding factors, evaluating
+                        the experimental validity, in addition to the reproducibility and generalizability of the model.</p>
+                    <p>The control here is done by copying the first image and comparing the two images, with their
+                        scores on the right side.</p>
+                </div>
+            </div>
+    
+            <div class="metric_zone">
+                <h2>Structural Similarity Index Measure (SSIM)</h2>
+    
+                <!--
+                <div class="metric_image_zone">
+                    <img class="comparison_image" src="{{ url_for('static', filename='images/ssim_difference_image.jpg') }}" alt="SSIM Difference Image">
+                </div> -->
+                
+                <div class="score_zone">
+                    <p><b>SSIM</b>:  {{ rendering['ssim'][0] }}</p>
+                    <p><b>SSIM control</b>:  {{ rendering['ssim'][1] }}</p>
+                </div>
+                
+                <div class="text_zone">
+                    <p>It is a metric used to measure the similarity between two images, accepting any dimensionality,
+                        but with the same shape.</p>
+                    <p>Suitable for evaluating image quality and evaluating similarity between images.</p>
+                    <p>SSIM compares the structural components of images, extracting 3 main characteristics of an image:
+                        luminance, contrast and structure.</p>
+                    
+                    <p>A value of 1 indicates that the images are identical, while a value close to 0 indicates less
+                        similarity.</p>
+                </div>
+                
+            </div>
+    
+            <div class="metric_zone">
+                <h2>Mean Squared Error (MSE) and Root Mean Squared Error (RMSE)</h2>
+                
+                <div class="score_zone">
+                    <div>
+                        <p><b>MSE</b>:  {{ rendering['r_mse'][0] }}</p>
+                        <p><b>RMSE</b>:  {{ rendering['r_mse'][1] }}</p>
+                    </div>
+                    <div>
+                        <p><b>MSE control</b>:  {{ rendering['r_mse'][2] }}</p>
+                        <p><b>RMSE control</b>:  {{ rendering['r_mse'][3] }}</p>
+                    </div>
+                    
+                </div>
+                
+                <div class="text_zone">
+                    <p>The main difference between MSE and RMSE lies in the scale of the error values.</p>
+                    <p>MSE provides the average squared error, while RMSE gives a more interpretable measure of the
+                        average error in the original units of the data, as it is on the same scale as the data.</p>
+                    <p>When comparing images, MSE measures the mean square difference between the pixel intensities of
+                        the corresponding pixels in the two images, providing a quantitative measure of the overall
+                        difference between the images.</p>
+                    
+                </div>
+            </div>
+    
+            <div class="metric_zone">
+                <h2>Histogram Comparison</h2>
+    
+                <div class="metric_image_zone">
+                    <img class="comparison_image"
+                         src="{{ url_for('static', filename='images/histogram_comparison.jpg') }}"
+                         alt="Histogram Comparison Image">
+                    
+                    <img class="comparison_image"
+                         src="{{ url_for('static', filename='images/histogram_comparison_control.jpg') }}"
+                         alt="Histogram Comparison Image">
+                </div>
+                
+                <div class="score_zone">
+                    <div>
+                        <p><b>Correlation</b>: {{ rendering['hc'][0] }}</p>
+                        <p><b>Chi-Square</b>: {{ rendering['hc'][1] }}</p>
+                        <p><b>Intersection</b>: {{ rendering['hc'][2] }}</p>
+                        <p><b>Bhattacharyya</b>: {{ rendering['hc'][3] }}</p>
+                    </div>
+                    <div>
+                        <p><b>Correlation control</b>: {{ rendering['hc'][4] }}</p>
+                        <p><b>Chi-Square control</b>: {{ rendering['hc'][5] }}</p>
+                        <p><b>Intersection control</b>: {{ rendering['hc'][6] }}</p>
+                        <p><b>Bhattacharyya control</b>: {{ rendering['hc'][7] }}</p>
+                    </div>
+                    
+                </div>
+                
+                <div class="text_zone">
+                    <p>Histogram-based methods compare the distribution of pixel intensities in two images.</p>
+                    <p>The result of histogram comparison is a value that indicates the similarity or dissimilarity.</p>
+                   
+                    <br>
+                    <p>Common techniques when using the histogram: </p>
+                    <p><b>Correlation</b>: Measures the correlation between two histograms by calculating the similarity
+                        between the shapes of the histograms, which varies between -1 and 1.
+                        Where the value 1 represents a perfect match, 0 represents no correlation, and -1 represents a
+                        perfect inverse match.</p>
+                    <p><b>Chi-Square</b>: Calculates the chi-square distance between two histograms by measuring the
+                        difference in distribution and ranging from 0 to infinity, where higher values indicate greater
+                        dissimilarity.</p>
+                    <p><b>Intersection</b>: Calculates the intersection between two histograms, measuring the
+                        overlapping area between the histograms and varies from 0 to the minimum sum of histogram
+                        values, where the higher the greater the similarity.</p>
+                    <p><b>Bhattacharyya</b>: It measures the statistical similarity between distributions and ranges
+                        from 0 to 1, so that 0 represents a perfect match and 1 represents maximum dissimilarity.</p>
+                </div>
+            </div>
+    
+            <div class="metric_zone">
+                <h2>Feature Extraction and Matching</h2>
+    
+                <div class="metric_image_zone">
+                   <img class="comparison_image"
+                        src="{{ url_for('static', filename='images/feature_em_matched_image.jpg') }}"
+                        alt="Feature Extraction and Matching Image">
+                    
+                </div>
+                
+                <div class="score_zone">
+                    <div>
+                        <p><b>Similarity Score</b>: {{ rendering['ssim'][0] }}</p>
+                    </div>
+                    <div>
+                        <p><b>Similarity Score control</b>: {{ rendering['ssim'][1] }}</p>
+                    </div>
+                </div>
+                
+                <div class="text_zone">
+                    <p>This approach involves extracting features from images (e.g., keypoints, descriptors) and then
+                        matching them between the two images.</p>
+                    <p>Popular feature extraction algorithms include Scale-Invariant Feature Transform (SIFT),
+                        Speeded-Up Robust Features (SURF), and Oriented FAST and Rotated BRIEF (ORB).</p>
+                    <p>The similarity score is based on the number of matches, in this case it is the match count and
+                        here SIFT was used due to its high accuracy.</p>
+                </div>
+            </div>
+    
+            <div class="metric_zone">
+                <h2>Normalized Cross-Correlation (NCC)</h2>
+                
+                <div class="score_zone">
+                    <div>
+                        <p><b>NCC Score</b>:  {{ rendering['ncc'][0] }}</p>
+                    </div>
+                    <div>
+                        <p><b>NCC Score control</b>:  {{ rendering['ncc'][1] }}</p>
+                    </div>
+                </div>
+                
+                <div class="text_zone">
+                    <p>The NCC score provides a measure of the linear relationship between the pixel intensities of the
+                        two images, indicating how well the pixel intensities in one image can be predicted from the
+                        intensities in the other image.</p>
+                    <p>The NCC score is a value that quantifies the degree of correlation or resemblance between the
+                        images, but  it does not consider spatial information or the arrangement of pixels..</p>
+                    <p>The resulting Normalized Cross-Correlation value represents the similarity or dissimilarity between the two
+                        images, with values ranging from -1 to 1.</p>
+                    <p>A value of 1 indicates a perfect match, 0 indicates no correlation, and -1 indicates a perfect
+                        anti-correlation.</p>
+                </div>
+            </div>
+    
+            <div class="metric_zone">
+                <h2>Mutual Information (MI)</h2>
+    
+                
+                <div class="score_zone">
+                    <div>
+                        <p><b>MI</b>:  {{ rendering['mi'][0] }}</p>
+                    </div>
+                    <div>
+                        <p><b>MI control</b>:  {{ rendering['mi'][1] }}</p>
+                    </div>
+                </div>
+                
+                <div class="text_zone">
+                    <p>In the context of comparing two images using Mutual Information (MI), the score obtained
+                        represents the amount of mutual information or shared information between the two images. </p>
+                    <p>Mutual Information is a measure of statistical dependence that quantifies how much knowing the
+                        pixel intensities in one image reduces the uncertainty about the pixel intensities in the other image.</p>
+                    <p>the obtained MI score can be interpreted as the level of similarity or similarity between the two
+                        images based on their pixel intensities, where a higher MI score indicates a higher level of
+                        shared information and therefore suggests a greater degree of similarity between the images.</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="side_column">
+    
+        </div>
+    </main>
+
+    <footer>
+    
+    </footer>
+</body>
+</html>
