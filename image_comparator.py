@@ -94,6 +94,9 @@ def get_feature_em(img_1, img_2, file_name):
     img_1 = np.array(img_1)
     img_2 = np.array(img_2)
 
+    img_1 = cv2.cvtColor(img_1, cv2.COLOR_RGB2GRAY)
+    img_2 = cv2.cvtColor(img_2, cv2.COLOR_RGB2GRAY)
+
     # Detect and compute keypoints and descriptors for both images
     keypoints1, descriptors1 = sift.detectAndCompute(img_1, None)
     keypoints2, descriptors2 = sift.detectAndCompute(img_2, None)
@@ -110,7 +113,7 @@ def get_feature_em(img_1, img_2, file_name):
     # Compute the similarity score based on the number of matches
     similarity = len(matches)
 
-    matched_image = cv2.drawMatches(img_1, keypoints1, img_2, keypoints2, matches[:10], None)
+    matched_image = cv2.drawMatches(img_1, keypoints1, img_2, keypoints2, matches[:50], None)
 
     cv2.imwrite(f"static/images/{file_name}.jpg", matched_image)
 
@@ -121,8 +124,8 @@ def get_feature_em(img_1, img_2, file_name):
 def calculate_ncc(img_1_size, img_2_size):
     image1, image2 = resize_images(img_1_size, img_2_size)
 
-    image1 = np.array(image1)
-    image2 = np.array(image2)
+    image1 = cv2.cvtColor(image1, cv2.COLOR_RGB2GRAY)
+    image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2GRAY)
 
     image1 = image1.astype(np.float64)
     image2 = image2.astype(np.float64)
@@ -153,8 +156,8 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
 
     image1, image2 = resize_images(img_1_size, img_2_size)
 
-    image1 = np.array(image1)
-    image2 = np.array(image2)
+    image1 = cv2.cvtColor(image1, cv2.COLOR_RGB2GRAY)
+    image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2GRAY)
 
     # Flatten the images to 1D arrays
     flat_image1 = image1.flatten()
@@ -186,6 +189,14 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
     mi = entropy_image1 + entropy_image2 - entropy_joint
 
     return [mi]
+
+# TO IMPROVE:
+# Peak signal-to-noise ratio (PSNR)
+# Feature-based similarity index (FSIM)
+# Information theoretic-based Statistic Similarity Measure (ISSM)
+# Signal to reconstruction error ratio (SRE)
+# Spectral angle mapper (SAM)
+# Universal image quality index (UIQ)
 
 
 def process_data(image_1, image_2):

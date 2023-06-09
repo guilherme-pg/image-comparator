@@ -1,9 +1,10 @@
 # Image Comparator
 
-
+what it is?
 
 ## **How it works?**
 Install the requirements.txt.</br>
+Preferably in a virtual environment, and in this case I activated it.
 After that, using the prompt in the folder where the app is, type:
 > python app.py
 

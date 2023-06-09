@@ -3,6 +3,10 @@
 }
 h1 {
     color: #620e1f;
+    margin-bottom: 20px;
+}
+p {
+    color: #620e1f;
 }
 
 .drop_general_zone {
