@@ -8,6 +8,10 @@ Then he is redirected to a page with the metrics and statistics that evaluate th
 <img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;
 "/></br>
 
+<div style="text-align: center;">
+    ![Land Page](./static/images/land_page.png)
+</div>
+
 ## **How it works?**
 Install the requirements.txt.</br>
 Preferably in a virtual environment, and in this case I activated it.
