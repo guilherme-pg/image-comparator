@@ -36,8 +36,10 @@ Taking the square root, the RMSE provides a measure of the average magnitude of 
 
 
 ## **Histogram Comparison**
-<img src="./static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;
-"/></br>
+<p align="center">
+  <img src="./static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;"/>
+</p></br>
+
 Histogram-based methods compare the distribution of pixel intensities in two images.</br>
 The result of histogram comparison is a value that indicates the similarity or dissimilarity.</br>
 Common techniques when using the histogram:</br>
@@ -53,7 +55,10 @@ represents a perfect match and 1 represents maximum dissimilarity.
 
 
 ## **Feature Extraction and Matching**
-<img src="/static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 400px;"/></br>
+<p align="center">
+  <img src="/static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 400px;"/>
+</p></br>
+
 This approach involves extracting features from images (e.g., keypoints, descriptors) and then matching them between 
 the two images.</br>
 Popular feature extraction algorithms include Scale-Invariant Feature Transform (SIFT), Speeded-Up Robust Features 
