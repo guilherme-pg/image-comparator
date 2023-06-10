@@ -1,6 +1,12 @@
 # Image Comparator
 
-what it is?
+What it is?</br>
+The Image Comparator serves to do exactly what the name says, compare images.</br>
+The user selects two images and clicks the 'compare images' button.</br>
+Then he is redirected to a page with the metrics and statistics that evaluate the similarity or not between the images.
+
+<img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;
+"/></br>
 
 ## **How it works?**
 Install the requirements.txt.</br>
@@ -11,7 +17,7 @@ After that, using the prompt in the folder where the app is, type:
 Copy and paste the http link into your browser and enjoy.
 
 
-## **Structural Similarity Index MMeasure (SSIM)**
+## **Structural Similarity Index Measure (SSIM)**
 The SSIM (Structural Similarity Index) score is a metric used to measure the similarity between two images, by quantifying the structural similarity between the pixel intensities of the images, taking into account the perceived changes in structural information, luminance and contrast.</br>
 The SSIM score ranges between -1 and 1, with 1 indicating a perfect similarity between the images.</br> 
 Higher SSIM scores indicate greater similarity, while lower scores indicate more dissimilarity.</br>
@@ -28,7 +34,7 @@ Taking the square root, the RMSE provides a measure of the average magnitude of 
 
 
 ## **Histogram Comparison**
-<img src="./static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 500px; width:500px;
+<img src="./static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;
 "/></br>
 Histogram-based methods compare the distribution of pixel intensities in two images.</br>
 The result of histogram comparison is a value that indicates the similarity or dissimilarity.</br>
@@ -45,9 +51,7 @@ represents a perfect match and 1 represents maximum dissimilarity.
 
 
 ## **Feature Extraction and Matching**
-<img src="/static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 500px; 
-width:500px;"/>
-</br>
+<img src="/static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 400px;"/></br>
 This approach involves extracting features from images (e.g., keypoints, descriptors) and then matching them between 
 the two images.</br>
 Popular feature extraction algorithms include Scale-Invariant Feature Transform (SIFT), Speeded-Up Robust Features 

@@ -190,6 +190,7 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
 
     return [mi]
 
+
 # TO IMPROVE:
 # Peak signal-to-noise ratio (PSNR)
 # Feature-based similarity index (FSIM)
