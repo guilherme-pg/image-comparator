@@ -1,6 +1,6 @@
 # Image Comparator
 
-What it is?</br>
+### **What it is?**
 The Image Comparator serves to do exactly what the name says, compare images.</br>
 The user selects two images and clicks the 'compare images' button.</br>
 Then he is redirected to a page with the metrics and statistics that evaluate the similarity or not between the images.
@@ -19,11 +19,11 @@ After that, using the prompt in the folder where the app is, type:
 Copy and paste the http link into your browser and enjoy.
 
 
-### **Structural Similarity Index Measure (SSIM)**
+## **Structural Similarity Index Measure (SSIM)**
 The SSIM (Structural Similarity Index) score is a metric used to measure the similarity between two images, by quantifying the structural similarity between the pixel intensities of the images, taking into account the perceived changes in structural information, luminance and contrast.</br>
 
 
-### **Mean Squared Error (MSE) and Root Mean Squared Error (RMSE)**
+## **Mean Squared Error (MSE) and Root Mean Squared Error (RMSE)**
 The MSE is the mean of the squared differences between the predicted values and the actual values, and is obtained by summing the squares of the errors and dividing by the total number of data points, with the RMSE being the square root of the MSE. </br>
 The result is an error value that represents the mean squared difference between the predicted and actual values.</br>
 
