@@ -5,12 +5,10 @@ The Image Comparator serves to do exactly what the name says, compare images.</b
 The user selects two images and clicks the 'compare images' button.</br>
 Then he is redirected to a page with the metrics and statistics that evaluate the similarity or not between the images.
 
-<img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;
-"/></br>
+<p align="center">
+  <img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;"/>
+</p></br>
 
-<div style="text-align: center;">
-    ![Land Page](./static/images/land_page.png)
-</div>
 
 ## **How it works?**
 Install the requirements.txt.</br>
