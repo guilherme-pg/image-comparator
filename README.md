@@ -3,7 +3,7 @@
 ### **What it is?**
 The Image Comparator serves to do exactly what the name says, compare images.</br>
 The user selects two images and clicks the 'compare images' button.</br>
-Then he is redirected to a page with the metrics and statistics that evaluate the similarity or not between the images.
+Then it is redirected to a page with the metrics and statistics that evaluate the similarity or not between the images.
 
 <p align="center">
   <img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;"/>
@@ -42,8 +42,7 @@ Some common techniques when using the histogram:Correlation, Chi-Square, Interse
   <img src="/static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 400px;"/>
 </p></br>
 
-This approach involves extracting features from images (e.g., keypoints, descriptors) and then matching them between 
-the two images.</br>
+This approach involves extracting features from images (e.g., keypoints, descriptors) and then matching them between the two images.</br>
 Popular feature extraction algorithms include Scale-Invariant Feature Transform (SIFT), Speeded-Up Robust Features 
 (SURF), and Oriented FAST and Rotated BRIEF (ORB).</br>
 The similarity score is based on the number of matches, in this case it is the match count and here SIFT was used 

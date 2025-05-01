@@ -14,19 +14,25 @@ def home():
 
 @app.route("/process_form", methods=['POST'])
 def process_form():
+    if 'image_1' not in request.files or 'image_2' not in request.files:
+        return "Erro: Ambas as imagens devem ser enviadas.", 400
+
     image_1 = request.files['image_1']
     image_2 = request.files['image_2']
     # TO IMPROVE: drag and drop - handle the upload in the input
 
-    metrics = process_data(image_1, image_2)
+    try:
+        metrics = process_data(image_1, image_2)
+    except Exception as e:
+        return f"Erro ao processar imagens: {str(e)}", 500
 
     return render_template("comparison.html", rendering=metrics)
 
 '''
-# METRICS GUIDE
-@app.route("/metrics")
-def metrics():
-    return render_template("metrics.html")
+    # METRICS GUIDE
+    @app.route("/metrics")
+    def metrics():
+        return render_template("metrics.html")
 '''
 
 if __name__ == "__main__":

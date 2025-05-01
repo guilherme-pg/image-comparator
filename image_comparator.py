@@ -4,18 +4,19 @@ import cv2
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
-from skimage.metrics import structural_similarity as ssim
+from skimage import measure
+
 
 
 def resize_images(img_1, img_2):
-    # TO IMPROVE: workaround: the next 2 lines select the smallest values and
-    # the 3rd line avoids combining values so that the dimensions do not fail to adjust
-    smaller_size_1 = (min(img_1.size[0], img_2.size[0]), min(img_1.size[1], img_2.size[1]))
-    smaller_size_2 = (min(img_1.size[0], img_2.size[1]), min(img_1.size[1], img_2.size[0]))
-    smaller_size = (min(smaller_size_1[0], smaller_size_2[0]), min(smaller_size_1[1], smaller_size_2[1]))
-
-    image_one = img_1.resize(smaller_size, resample=Image.LANCZOS)
-    image_two = img_2.resize(smaller_size, resample=Image.LANCZOS)
+    '''
+    resizes two images to their smallest common size, 
+    saving a resized version and the original version of one of the images.
+    '''
+    # select the smallest values
+    new_size = (min(img_1.width, img_2.width), min(img_1.height, img_2.height))
+    image_one = img_1.resize(new_size, Image.Resampling.LANCZOS)
+    image_two = img_2.resize(new_size, Image.Resampling.LANCZOS)
 
     img_1_size = np.array(image_one)
     img_2_size = np.array(image_two)
@@ -27,16 +28,22 @@ def resize_images(img_1, img_2):
     return img_1_size, img_2_size
 
 
+
 # Structural Similarity Index MMeasure (SSIM)
 def get_ssim(img_1_size, img_2_size):
+    '''
+        Evaluates how structurally similar two images are.
+    '''
     image1, image2 = resize_images(img_1_size, img_2_size)
 
     # Calculate SSIM score
-    score, diff = ssim(image1, image2, win_size=5, full=True, channel_axis=2)
+    score, diff = measure.compare_ssim(image1, image2, win_size=5, full=True, channel_axis=2)
 
     # The diff image contains the actual image differences between the two images
 
-    cv2.imwrite("static/images/ssim_difference_image.jpg", diff)  # PROBLEM: black image
+    diff_uint8 = (diff * 255).astype("uint8")
+    cv2.imwrite("static/images/ssim_difference_image.jpg", diff_uint8)
+    #cv2.imwrite("static/images/ssim_difference_image.jpg", diff)  # PROBLEM: black image
 
     return [score]
 
@@ -203,12 +210,6 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
 def process_data(image_1, image_2):
     img_1 = Image.open(image_1)
     img_2 = Image.open(image_2)
-
-    '''
-    :parameter img_1, img_2: DATATYPE ->  <class 'werkzeug.datastructures.file_storage.FileStorage'>
-    
-    Image.open() return a <class 'PIL.JpegImagePlugin.JpegImageFile'>
-    '''
 
     img_control = img_1.copy()
 
