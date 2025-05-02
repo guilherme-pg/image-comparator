@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
-from skimage import measure
+from skimage import metrics
 
 
 
@@ -13,17 +13,21 @@ def resize_images(img_1, img_2):
     resizes two images to their smallest common size, 
     saving a resized version and the original version of one of the images.
     '''
+    
     # select the smallest values
     new_size = (min(img_1.width, img_2.width), min(img_1.height, img_2.height))
     image_one = img_1.resize(new_size, Image.Resampling.LANCZOS)
     image_two = img_2.resize(new_size, Image.Resampling.LANCZOS)
 
-    img_1_size = np.array(image_one)
-    img_2_size = np.array(image_two)
-    img_normal = np.array(img_1)
+    img_1_size = cv2.cvtColor(np.array(image_one), cv2.COLOR_RGB2BGR)
+    img_2_size = cv2.cvtColor(np.array(image_two), cv2.COLOR_RGB2BGR)
+    # img_1_normal = cv2.cvtColor(np.array(img_1), cv2.COLOR_RGB2BGR)
+    # img_2_normal = cv2.cvtColor(np.array(img_2), cv2.COLOR_RGB2BGR)
 
-    cv2.imwrite("static/images/img_normal_size.jpg", img_normal)  # to set as a normal size example
-    cv2.imwrite("static/images/img_resized.jpg", img_1_size)  # to set as a resized example
+    # cv2.imwrite("static/images/img_1_normal_size.jpg", img_1_normal)  # to set as a normal size example
+    cv2.imwrite("static/images/img_1_resized.jpg", img_1_size)  # to set as a resized example
+    # cv2.imwrite("static/images/img_2_normal_size.jpg", img_2_normal)  # to set as a normal size example
+    cv2.imwrite("static/images/img_2_resized.jpg", img_2_size)  # to set as a resized example
 
     return img_1_size, img_2_size
 
@@ -37,13 +41,13 @@ def get_ssim(img_1_size, img_2_size):
     image1, image2 = resize_images(img_1_size, img_2_size)
 
     # Calculate SSIM score
-    score, diff = measure.compare_ssim(image1, image2, win_size=5, full=True, channel_axis=2)
+    score, diff = metrics.structural_similarity(image1, image2, win_size=5, full=True, channel_axis=2)
 
     # The diff image contains the actual image differences between the two images
 
     diff_uint8 = (diff * 255).astype("uint8")
     cv2.imwrite("static/images/ssim_difference_image.jpg", diff_uint8)
-    #cv2.imwrite("static/images/ssim_difference_image.jpg", diff)  # PROBLEM: black image
+    
 
     return [score]
 
@@ -88,6 +92,8 @@ def get_histogram_comparison(img_1_size, img_2_size, file_name, figure_title):
     plt.plot(hist1, color="red", alpha=0.5, label="Image 1")
     plt.plot(hist2, color="blue", alpha=0.5, label="Image 2")
     plt.legend()
+    plt.gca().spines["right"].set_visible(False)
+    plt.gca().spines["top"].set_visible(False)
     plt.savefig(f"static/images/{file_name}.jpg")
 
     return [correlation, chi_square, intersection, bhattacharyya]
@@ -95,33 +101,33 @@ def get_histogram_comparison(img_1_size, img_2_size, file_name, figure_title):
 
 # Feature Extraction and Matching
 def get_feature_em(img_1, img_2, file_name):
-    # Initialize the feature extractor (SIFT in this case)
+    # Inicializa o detector SIFT
     sift = cv2.SIFT_create()
 
-    img_1 = np.array(img_1)
-    img_2 = np.array(img_2)
+    # Converte imagens para escala de cinza
+    img_1 = cv2.cvtColor(np.array(img_1), cv2.COLOR_RGB2GRAY)
+    img_2 = cv2.cvtColor(np.array(img_2), cv2.COLOR_RGB2GRAY)
 
-    img_1 = cv2.cvtColor(img_1, cv2.COLOR_RGB2GRAY)
-    img_2 = cv2.cvtColor(img_2, cv2.COLOR_RGB2GRAY)
-
-    # Detect and compute keypoints and descriptors for both images
+    # Detecta keypoints e descritores
     keypoints1, descriptors1 = sift.detectAndCompute(img_1, None)
     keypoints2, descriptors2 = sift.detectAndCompute(img_2, None)
 
-    # Initialize the feature matcher (Brute-Force)
+    # Verifica se há descritores
+    if descriptors1 is None or descriptors2 is None:
+        return [0.0]
+
+    # Inicializa o matcher Brute-Force
     matcher = cv2.BFMatcher()
 
-    # Match the descriptors of the two images
-    matches = matcher.match(descriptors1, descriptors2)
+    # Aplica o teste de Lowe com k=2
+    matches = matcher.knnMatch(descriptors1, descriptors2, k=2)
+    good_matches = [m for m, n in matches if m.distance < 0.75 * n.distance]
 
-    # Sort the matches by distance
-    matches = sorted(matches, key=lambda x: x.distance)
+    # Similaridade normalizada pela quantidade de keypoints
+    similarity = len(good_matches) / max(len(keypoints1), len(keypoints2))
 
-    # Compute the similarity score based on the number of matches
-    similarity = len(matches)
-
-    matched_image = cv2.drawMatches(img_1, keypoints1, img_2, keypoints2, matches[:50], None)
-
+    # Salva imagem com os 50 melhores matches
+    matched_image = cv2.drawMatches(img_1, keypoints1, img_2, keypoints2, good_matches[:50], None)
     cv2.imwrite(f"static/images/{file_name}.jpg", matched_image)
 
     return [similarity]
@@ -198,6 +204,147 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
     return [mi]
 
 
+def classify_similarity(value, reference, metric_name):
+    if metric_name == 'ssim':
+        diff = abs(value - reference)
+        if diff == 0:
+            return 'equals'
+        elif diff < 0.01:
+            return 'very similar'
+        elif diff < 0.05:
+            return 'relatively similar'
+        elif diff < 0.1:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'r_mse':
+        normalized_mse = value / (255 ** 2)
+        if normalized_mse == 0:
+            return 'equals'
+        elif normalized_mse < 0.001:
+            return 'very similar'
+        elif normalized_mse < 0.01:
+            return 'relatively similar'
+        elif normalized_mse < 0.05:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'r_rmse':
+        normalized_rmse = value / 255
+        if normalized_rmse == 0:
+            return 'equals'
+        elif normalized_rmse < 0.02:
+            return 'very similar'
+        elif normalized_rmse < 0.06:
+            return 'relatively similar'
+        elif normalized_rmse < 0.12:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'hc_correlation':
+        diff = abs(value - reference)
+        if diff == 0:
+            return 'equals'
+        elif diff < 0.01:
+            return 'very similar'
+        elif diff < 0.05:
+            return 'relatively similar'
+        elif diff < 0.1:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'hc_chi_square':
+        diff = abs(value - reference)
+        if diff == 0:
+            return 'equals'
+        elif diff < 0.2:
+            return 'very similar'
+        elif diff < 0.6:
+            return 'relatively similar'
+        elif diff < 1.0:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'hc_intersection':
+        diff = abs(value - reference)
+        if diff == 0:
+            return 'equals'
+        elif diff < 0.1:
+            return 'very similar'
+        elif diff < 0.3:
+            return 'relatively similar'
+        elif diff < 0.5:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'hc_bhattacharyya':
+        diff = abs(value - reference)
+        if diff == 0:
+            return 'equals'
+        elif diff < 0.1:
+            return 'very similar'
+        elif diff < 0.3:
+            return 'relatively similar'
+        elif diff < 0.5:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'fem':
+        if reference == 0:
+            return 'very different'
+        ratio = value / reference
+        if ratio == 1.0:
+            return 'equals'
+        elif ratio >= 0.9:
+            return 'very similar'
+        elif ratio >= 0.7:
+            return 'relatively similar'
+        elif ratio >= 0.5:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'ncc':
+        diff = abs(value - reference)
+        if diff == 0:
+            return 'equals'
+        elif diff < 0.01:
+            return 'very similar'
+        elif diff < 0.05:
+            return 'relatively similar'
+        elif diff < 0.1:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    elif metric_name == 'mi':
+        if not reference:
+            return 'undefined'
+        ratio = value / reference
+        if ratio == 1.0:
+            return 'equals'
+        elif ratio >= 0.8:
+            return 'very similar'
+        elif ratio >= 0.6:
+            return 'relatively similar'
+        elif ratio >= 0.4:
+            return 'not very similar'
+        else:
+            return 'very different'
+
+    return 'undefined'
+
+
+
+
+
 # TO IMPROVE:
 # Peak signal-to-noise ratio (PSNR)
 # Feature-based similarity index (FSIM)
@@ -213,34 +360,34 @@ def process_data(image_1, image_2):
 
     img_control = img_1.copy()
 
-    ssim = get_ssim(img_1, img_2)
-    r_mse = get_mse_rmse(img_1, img_2)
-    histogram_comparasion = get_histogram_comparison(img_1, img_2, "histogram_comparison", "Histogram Comparison")
-    feature_em = get_feature_em(img_1, img_2, "feature_em_matched_image")
-    ncc = calculate_ncc(img_1, img_2)
-    mi = calculate_mi(img_1, img_2)
+    # Métricas de controle
+    ssim_ctrl = get_ssim(img_1, img_control)[0]
+    r_mse_ctrl, r_rmse_ctrl = get_mse_rmse(img_1, img_control)
+    hc_ctrl = get_histogram_comparison(img_1, img_control, "histogram_comparison_control", "Histogram Comparison Control")
+    fem_ctrl = get_feature_em(img_1, img_control, "feature_em_matched_image_control")[0]
+    ncc_ctrl = calculate_ncc(img_1, img_control)[0]
+    mi_ctrl = calculate_mi(img_1, img_control)[0]
 
-    ssim_ctrl = get_ssim(img_1, img_control)
-    r_mse_ctrl = get_mse_rmse(img_1, img_control)
-    histogram_comparasion_ctrl = get_histogram_comparison(img_1, img_control, "histogram_comparison_control",
-                                                          "Histogram Comparison Control")
-    feature_em_ctrl = get_feature_em(img_1, img_control, "feature_em_matched_image_control")
-    ncc_ctrl = calculate_ncc(img_1, img_control)
-    mi_ctrl = calculate_mi(img_1, img_control)
+    # Métricas imagem 1 vs imagem 2
+    ssim = get_ssim(img_1, img_2)[0]
+    r_mse, r_rmse = get_mse_rmse(img_1, img_2)
+    hc = get_histogram_comparison(img_1, img_2, "histogram_comparison", "Histogram Comparison")
+    fem = get_feature_em(img_1, img_2, "feature_em_matched_image")[0]
+    ncc = calculate_ncc(img_1, img_2)[0]
+    mi = calculate_mi(img_1, img_2)[0]
 
-    ssim.extend(ssim_ctrl)
-    r_mse.extend(r_mse_ctrl)
-    histogram_comparasion.extend(histogram_comparasion_ctrl)
-    feature_em.extend(feature_em_ctrl)
-    ncc.extend(ncc_ctrl)
-    mi.extend(mi_ctrl)
+    results = {
+        'ssim': [ssim, ssim_ctrl, classify_similarity(ssim, ssim_ctrl, "ssim")],
+        'r_mse': [r_mse, r_mse_ctrl, classify_similarity(r_mse, r_mse_ctrl, "r_mse")],
+        'r_rmse': [r_rmse, r_rmse_ctrl, classify_similarity(r_rmse, r_rmse_ctrl, "r_rmse")],
+        'hc_correlation': [hc[0], hc_ctrl[0], classify_similarity(hc[0], hc_ctrl[0], "hc_correlation")],
+        'hc_chi_square': [hc[1], hc_ctrl[1], classify_similarity(hc[1], hc_ctrl[1], "hc_chi_square")],
+        'hc_intersection': [hc[2], hc_ctrl[2], classify_similarity(hc[2], hc_ctrl[2], "hc_intersection")],
+        'hc_bhattacharyya': [hc[3], hc_ctrl[3], classify_similarity(hc[3], hc_ctrl[3], "hc_bhattacharyya")],
+        'fem': [fem, fem_ctrl, classify_similarity(fem, fem_ctrl, "fem")],
+        'ncc': [ncc, ncc_ctrl, classify_similarity(ncc, ncc_ctrl, "ncc")],
+        'mi': [mi, mi_ctrl, classify_similarity(mi, mi_ctrl, "mi")]
+    }
 
-    results = {'ssim': ssim,
-               'r_mse': r_mse,
-               'hc': histogram_comparasion,
-               'fem': feature_em,
-               'ncc': ncc,
-               'mi': mi
-               }
 
     return results

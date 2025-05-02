@@ -26,7 +26,7 @@
             </div>
             -->
         </div>
-    
+        <!--
         <div class="main_column">
             
             <h1>Image Comparer</h1>
@@ -37,16 +37,12 @@
                 <div class="drop_span_zone">
     
                     <div class="drop-zone" id="drop-zone1">
-                        <!-- <span class="drop-text">Drop Image 1 here</span> -->
                         <h3>Select the First Image</h3>
-                        <!-- <label class="button_label" for="image_input_1">Search</label> -->
                         <input type="file" class="file-input" name="image_1" id="image_input_1" accept="image/*" data-dropzone="1" />
                     </div>
     
                     <div class="drop-zone" id="drop-zone2">
-                        <!-- <span class="drop-text">Drop Image 2 here</span> -->
                         <h3>Select the Second Image</h3>
-                        <!-- <label class="button_label" for="image_input_2">Search</label> -->
                         <input type="file" class="file-input" name="image_2" id="image_input_2" accept="image/*" data-dropzone="2" />
                     </div>
                 </div>
@@ -57,6 +53,38 @@
             <div class="instruction_zone">
     
             </div>
+        </div>
+        -->
+
+        <div class="main_column">
+            <h1>Image Comparer</h1>
+            <p>Select two images to evaluate the degree of similarity or dissimilarity between them.</p>
+        
+            <form class="drop_general_zone" id="imageForm" method="POST" action="/process_form" enctype="multipart/form-data">
+        
+                <div class="drop_span_zone">
+                    <div class="drop-zone" id="drop-zone1">
+                        <h3>Select the First Image</h3>
+                        <p>this will be the control image</p>
+                        <label for="image_input_1" class="drop-area" id="drop-area-1">
+                            <span class="file-label">Drop Image 1 here or click to select</span>
+                            <input type="file" class="file-input" name="image_1" id="image_input_1" accept="image/*" hidden />
+                        </label>
+                    </div>
+        
+                    <div class="drop-zone" id="drop-zone2">
+                        <h3>Select the Second Image</h3>
+                        <label for="image_input_2" class="drop-area" id="drop-area-2">
+                            <span class="file-label">Drop Image 2 here or click to select</span>
+                            <input type="file" class="file-input" name="image_2" id="image_input_2" accept="image/*" hidden />
+                        </label>
+                    </div>
+                </div>
+        
+                <button class="submit_button" id="upload-button">Compare Images</button>
+            </form>
+        
+            <div class="instruction_zone"></div>
         </div>
     
         <div class="side_column">

@@ -35,15 +35,30 @@
     
                 <div class="metric_image_zone">
                     <img class="comparison_image"
-                         src="{{ url_for('static', filename='images/img_normal_size.jpg') }}"
+                         src="{{ url_for('static', filename='images/img_1_resized.jpg') }}"
                          alt="Normal Size Image"
                         title="Normal Size Image">
                     
                     <img class="comparison_image"
-                         src="{{ url_for('static', filename='images/img_resized.jpg') }}"
+                         src="{{ url_for('static', filename='images/img_2_resized.jpg') }}"
                          alt="Resized Image"
                          title="Resized Image">
                 </div>
+
+                <!--
+                # TO IMPROVE: para mostrar a diferença entre o tamanho das imagens originais e ajustadas
+                <div class="metric_image_zone">
+                    <img class="comparison_image"
+                         src="{{ url_for('static', filename='images/img_2_normal_size.jpg') }}"
+                         alt="Normal Size Image"
+                        title="Normal Size Image">
+                    
+                    <img class="comparison_image"
+                         src="{{ url_for('static', filename='images/img_2_resized.jpg') }}"
+                         alt="Resized Image"
+                         title="Resized Image">
+                </div>
+                -->
                 
                 <div class="text_zone">
                     <p>Resizing the images is not always necessary for comparing or evaluating image similarity using
@@ -68,14 +83,15 @@
             <div class="metric_zone">
                 <h2>Structural Similarity Index Measure (SSIM)</h2>
     
-                <!--
+                
                 <div class="metric_image_zone">
                     <img class="comparison_image" src="{{ url_for('static', filename='images/ssim_difference_image.jpg') }}" alt="SSIM Difference Image">
-                </div> -->
+                </div>
                 
                 <div class="score_zone">
                     <p><b>SSIM</b>:  {{ rendering['ssim'][0] }}</p>
                     <p><b>SSIM control</b>:  {{ rendering['ssim'][1] }}</p>
+                    <p><b>Similarity Evaluation</b>:  {{ rendering['ssim'][2] }}</p>
                 </div>
                 
                 <div class="text_zone">
@@ -97,11 +113,15 @@
                 <div class="score_zone">
                     <div>
                         <p><b>MSE</b>:  {{ rendering['r_mse'][0] }}</p>
-                        <p><b>RMSE</b>:  {{ rendering['r_mse'][1] }}</p>
+                        <p><b>RMSE</b>:  {{ rendering['r_rmse'][0] }}</p>
                     </div>
                     <div>
-                        <p><b>MSE control</b>:  {{ rendering['r_mse'][2] }}</p>
-                        <p><b>RMSE control</b>:  {{ rendering['r_mse'][3] }}</p>
+                        <p><b>MSE control</b>:  {{ rendering['r_mse'][1] }}</p>
+                        <p><b>RMSE control</b>:  {{ rendering['r_rmse'][1] }}</p>
+                    </div>
+                    <div>
+                        <p><b>Similarity Evaluation</b>:  {{ rendering['r_mse'][2] }}</p>
+                        <p><b>Similarity Evaluation</b>:  {{ rendering['r_rmse'][2] }}</p>
                     </div>
                     
                 </div>
@@ -132,16 +152,22 @@
                 
                 <div class="score_zone">
                     <div>
-                        <p><b>Correlation</b>: {{ rendering['hc'][0] }}</p>
-                        <p><b>Chi-Square</b>: {{ rendering['hc'][1] }}</p>
-                        <p><b>Intersection</b>: {{ rendering['hc'][2] }}</p>
-                        <p><b>Bhattacharyya</b>: {{ rendering['hc'][3] }}</p>
+                        <p><b>Correlation</b>: {{ rendering['hc_correlation'][0] }}</p>
+                        <p><b>Chi-Square</b>: {{ rendering['hc_chi_square'][0] }}</p>
+                        <p><b>Intersection</b>: {{ rendering['hc_intersection'][0] }}</p>
+                        <p><b>Bhattacharyya</b>: {{ rendering['hc_bhattacharyya'][0] }}</p>
                     </div>
                     <div>
-                        <p><b>Correlation control</b>: {{ rendering['hc'][4] }}</p>
-                        <p><b>Chi-Square control</b>: {{ rendering['hc'][5] }}</p>
-                        <p><b>Intersection control</b>: {{ rendering['hc'][6] }}</p>
-                        <p><b>Bhattacharyya control</b>: {{ rendering['hc'][7] }}</p>
+                        <p><b>Correlation control</b>: {{ rendering['hc_correlation'][1] }}</p>
+                        <p><b>Chi-Square control</b>: {{ rendering['hc_chi_square'][1] }}</p>
+                        <p><b>Intersection control</b>: {{ rendering['hc_intersection'][1] }}</p>
+                        <p><b>Bhattacharyya control</b>: {{ rendering['hc_bhattacharyya'][1] }}</p>
+                    </div>
+                    <div>
+                        <p><b>Correlation Similarity Evaluation</b>: {{ rendering['hc_correlation'][2] }}</p>
+                        <p><b>Chi-Square Similarity Evaluation</b>: {{ rendering['hc_chi_square'][2] }}</p>
+                        <p><b>Intersection Similarity Evaluation</b>: {{ rendering['hc_intersection'][2] }}</p>
+                        <p><b>Bhattacharyya Similarity Evaluation</b>: {{ rendering['hc_bhattacharyya'][2] }}</p>
                     </div>
                     
                 </div>
@@ -149,7 +175,10 @@
                 <div class="text_zone">
                     <p>Histogram-based methods compare the distribution of pixel intensities in two images.</p>
                     <p>The result of histogram comparison is a value that indicates the similarity or dissimilarity.</p>
-                   
+                    <p>The histogram compares the distribution of pixel intensities between two images.</p>
+                    <p>Bins: These are the intervals of pixel intensity.</p>
+                    <p>Frequency: This represents how many pixels in the image fall into each bin.</p>
+
                     <br>
                     <p>Common techniques when using the histogram: </p>
                     <p><b>Correlation</b>: Measures the correlation between two histograms by calculating the similarity
@@ -179,10 +208,13 @@
                 
                 <div class="score_zone">
                     <div>
-                        <p><b>Similarity Score</b>: {{ rendering['ssim'][0] }}</p>
+                        <p><b>Similarity Score</b>: {{ rendering['fem'][0] }}</p>
                     </div>
                     <div>
-                        <p><b>Similarity Score control</b>: {{ rendering['ssim'][1] }}</p>
+                        <p><b>Similarity Score control</b>: {{ rendering['fem'][1] }}</p>
+                    </div>
+                    <div>
+                        <p><b>Similarity Score (Similarity Evaluation)</b>: {{ rendering['fem'][2] }}</p>
                     </div>
                 </div>
                 
@@ -205,6 +237,9 @@
                     </div>
                     <div>
                         <p><b>NCC Score control</b>:  {{ rendering['ncc'][1] }}</p>
+                    </div>
+                    <div>
+                        <p><b>NCC Score (Similarity Evaluation)</b>:  {{ rendering['ncc'][2] }}</p>
                     </div>
                 </div>
                 
@@ -231,6 +266,9 @@
                     </div>
                     <div>
                         <p><b>MI control</b>:  {{ rendering['mi'][1] }}</p>
+                    </div>
+                    <div>
+                        <p><b>MI Similarity Evaluation</b>:  {{ rendering['mi'][2] }}</p>
                     </div>
                 </div>
                 

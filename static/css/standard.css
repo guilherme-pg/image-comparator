@@ -115,11 +115,13 @@ svg:hover {
 
 
 /* TEXT ZONES */
+/*
 .score_zone {
     width: 100%;
     text-align: left;
     margin-bottom: 20px;
 }
+    */
 .text_zone {
     text-align: left;
 }

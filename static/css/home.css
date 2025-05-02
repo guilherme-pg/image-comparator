@@ -63,3 +63,15 @@ h3 {
     background-color: #460b17;
     transition: 0.5s;
 }
+
+.drop-area {
+    border: 2px dashed #aaa;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.drop-area.dragover {
+    background-color: #e3e3e3;
+}
