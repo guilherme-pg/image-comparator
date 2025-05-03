@@ -28,14 +28,12 @@ def process_form():
 
     return render_template("comparison.html", rendering=metrics)
 
-
-    '''
-        # METRICS GUIDE
-        @app.route("/metrics")
-        def metrics():
-            return render_template("metrics.html")
-    '''
-
+'''
+# METRICS GUIDE
+@app.route("/metrics")
+def metrics():
+    return render_template("metrics.html")
+'''
 
 if __name__ == "__main__":
-    app.run(port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
