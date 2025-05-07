@@ -6,7 +6,7 @@ The user selects two images and clicks the 'compare images' button.</br>
 Then it is redirected to a page with metrics and statistics that evaluate the similarity or not between the images.
 
 <p align="center">
-  <img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;"/>
+  <img src="/static/images/land_page.png" alt="Land Page" style="height: 400px;"/>
 </p>
 
 
