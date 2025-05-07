@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Define o diretório de trabalho dentro do container
+# diretório de trabalho dentro do container
 WORKDIR /app
 # WORKDIR /image_comparator
 

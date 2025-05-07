@@ -7,7 +7,6 @@ from matplotlib import pyplot as plt
 from skimage import metrics
 
 
-
 def resize_images(img_1, img_2):
     '''
     resizes two images to their smallest common size, 
@@ -37,13 +36,20 @@ def resize_images(img_1, img_2):
 def get_ssim(img_1_size, img_2_size):
     '''
         Evaluates how structurally similar two images are.
-    '''
+
+        calculate SSIM score.
+        The diff image contains the actual image differences between the two images.
+            win_size=5: uses a 5x5 pixel window to compare image blocks.
+            full=True: returns the difference map in addition to the score.
+            channel_axis=2: indicates that the color (RGB) is on axis 2 (last dimension of the image).
+
+        Transforms the difference map (diff) from float values (0 to 1) to pixel values (0 to 255) and 
+        converts to uint8, which is the accepted format for saving images with cv2.imwrite.
+
+        '''
     image1, image2 = resize_images(img_1_size, img_2_size)
 
-    # Calculate SSIM score
     score, diff = metrics.structural_similarity(image1, image2, win_size=5, full=True, channel_axis=2)
-
-    # The diff image contains the actual image differences between the two images
 
     diff_uint8 = (diff * 255).astype("uint8")
     cv2.imwrite("static/images/ssim_difference_image.jpg", diff_uint8)
@@ -54,6 +60,18 @@ def get_ssim(img_1_size, img_2_size):
 
 # Mean Squared Error (MSE) and Root Mean Squared Error (RMSE)
 def get_mse_rmse(img_1_size, img_2_size):
+    '''
+        quantify how much two images differ pixel by pixel, without considering visual perception.
+        MSE is a metric of distortion: the higher the value, the more different the images are.
+
+        Calculates the Mean Squared Error (MSE):
+            For each pixel, calculate the difference between the images,
+            square it (to penalize larger errors),
+            and average all of these errors.
+
+        RMSE is simply the square root of MSE.
+        It has the same units as the pixel values, which makes it easier to interpret.
+    '''
     image1, image2 = resize_images(img_1_size, img_2_size)
 
     # Get the MSE
@@ -67,18 +85,37 @@ def get_mse_rmse(img_1_size, img_2_size):
 
 # Histogram Comparison
 def get_histogram_comparison(img_1_size, img_2_size, file_name, figure_title):
+    '''
+        compares two images based on their color histograms
+
+        Compares the two histograms using four metrics:
+            Correlation (higher value = more similar).
+            Chi-square (lower value = more similar).
+            Intersection (higher value = more similar).
+            Bhattacharyya distance (lower value = more similar).
+    '''
+
+    # np.array() checks to ensure that the images are in NumPy array format, which is required for OpenCV operations.
     img_1_size = np.array(img_1_size)
     img_2_size = np.array(img_2_size)
-
-    # Calculate the histograms
+    
+    '''
+        calculate the histograms.
+        Computes histograms for channel 2 (red channel in OpenCV BGR images).
+        [256], [0, 256]: 256 bins in the intensity range 0 to 255.
+        2 indicates that the histogram will be calculated only in the red channel of the image.
+        Number of "bins" (intensity bands).
+        Range of intensities considered.
+    '''
     hist1 = cv2.calcHist([img_1_size], [2], None, [256], [0, 256])
     hist2 = cv2.calcHist([img_2_size], [2], None, [256], [0, 256])
 
-    # Normalize the histograms
+    # normalize the histograms
+    # their sum is 1 — this makes them easier to compare regardless of the image size.
     hist1 /= hist1.sum()
     hist2 /= hist2.sum()
 
-    # Calculate the histogram similarity using the intersection method
+    # calculate the histogram similarity using the intersection method
     correlation = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CORREL)
     chi_square = cv2.compareHist(hist1, hist2, cv2.HISTCMP_CHISQR)
     intersection = cv2.compareHist(hist1, hist2, cv2.HISTCMP_INTERSECT)
@@ -101,32 +138,42 @@ def get_histogram_comparison(img_1_size, img_2_size, file_name, figure_title):
 
 # Feature Extraction and Matching
 def get_feature_em(img_1, img_2, file_name):
-    # Inicializa o detector SIFT
+    '''
+        SIFT extracts local features
+    '''
+
+    # creates a SIFT object
     sift = cv2.SIFT_create()
 
-    # Converte imagens para escala de cinza
+    # converts images to grayscale
     img_1 = cv2.cvtColor(np.array(img_1), cv2.COLOR_RGB2GRAY)
     img_2 = cv2.cvtColor(np.array(img_2), cv2.COLOR_RGB2GRAY)
 
-    # Detecta keypoints e descritores
+    # Detects keypoints and descriptors
+        # keypoints: coordinates of points of interest.
+        # descriptors: vectors representing local features around keypoints.
     keypoints1, descriptors1 = sift.detectAndCompute(img_1, None)
     keypoints2, descriptors2 = sift.detectAndCompute(img_2, None)
 
-    # Verifica se há descritores
+    # if any image has no detected points, the similarity is considered zero
     if descriptors1 is None or descriptors2 is None:
         return [0.0]
 
-    # Inicializa o matcher Brute-Force
+    # BFMatcher: uses brute force to compare all descriptors between images.
+        # produces a moderate number of descriptors which ensures high accuracy in matches 
+        # and is simple to implement
     matcher = cv2.BFMatcher()
 
-    # Aplica o teste de Lowe com k=2
+    # knnMatch(..., k=2): returns the two best matches for each descriptor.
     matches = matcher.knnMatch(descriptors1, descriptors2, k=2)
+
+    # Lowe filter (to remove false positives)
     good_matches = [m for m, n in matches if m.distance < 0.75 * n.distance]
 
-    # Similaridade normalizada pela quantidade de keypoints
+    # similarity normalized by the number of keypoints
     similarity = len(good_matches) / max(len(keypoints1), len(keypoints2))
 
-    # Salva imagem com os 50 melhores matches
+    # save image with top 50 matches
     matched_image = cv2.drawMatches(img_1, keypoints1, img_2, keypoints2, good_matches[:50], None)
     cv2.imwrite(f"static/images/{file_name}.jpg", matched_image)
 
@@ -135,30 +182,42 @@ def get_feature_em(img_1, img_2, file_name):
 
 # Normalized Cross-Correlation (NCC)
 def calculate_ncc(img_1_size, img_2_size):
+    '''
+        calculate the normalized cross-correlation between two resized images.
+        is a measure of similarity that compares how the pixel intensities of two images vary together, 
+        regardless of absolute brightness or contrast.
+
+        converts to grayscale.
+            images are converted from RGB to grayscale as NCC is typically applied to single intensity images.
+    '''
+
     image1, image2 = resize_images(img_1_size, img_2_size)
 
     image1 = cv2.cvtColor(image1, cv2.COLOR_RGB2GRAY)
     image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2GRAY)
 
+    # Pixel values ​​are converted to float64 to allow mathematical operations with greater precision.
     image1 = image1.astype(np.float64)
     image2 = image2.astype(np.float64)
 
+    # The mean is removed from each image, centering the data around zero. 
+    # This is important for correlation normalization.
     mean1 = np.mean(image1)
     mean2 = np.mean(image2)
 
-    # Subtract the mean values
+    # subtract the mean values
     image1 -= mean1
     image2 -= mean2
 
-    # Calculate the standard deviations
+    # calculate the standard deviations
     std1 = np.std(image1)
     std2 = np.std(image2)
 
-    # Normalize the images
+    # normalize the images
     image1 /= std1
     image2 /= std2
 
-    # Calculate the cross-correlation
+    # calculate the cross-correlation
     ncc = np.sum(image1 * image2) / np.sqrt(np.sum(image1**2) * np.sum(image2**2))
 
     return [ncc]
@@ -166,17 +225,28 @@ def calculate_ncc(img_1_size, img_2_size):
 
 # Mutual Information (MI)
 def calculate_mi(img_1_size, img_2_size, num_bins=256):
+    '''
+        mutual information represents how much information one image shares with another.
+        num_bins=256 is the number of bins used to construct the histograms
 
+        Shannon entropy measures the uncertainty or distribution of information in a variable.
+
+        In images:
+            If the pixels are all the same (uniform image), the entropy is low.
+            If the pixels are very varied (complex image), the entropy is high.
+    '''
     image1, image2 = resize_images(img_1_size, img_2_size)
 
+    # converts both images to grayscale to simplify processing.
     image1 = cv2.cvtColor(image1, cv2.COLOR_RGB2GRAY)
     image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2GRAY)
 
-    # Flatten the images to 1D arrays
+    # transforms 2D images into 1D arrays (vectors) to facilitate the calculation of histograms.
     flat_image1 = image1.flatten()
     flat_image2 = image2.flatten()
 
-    # Compute the joint histogram
+    # calculates the joint (2D) histogram, 
+    # which counts the combined occurrences of intensity values ​​between the two images.
     joint_histogram, _, _ = np.histogram2d(flat_image1, flat_image2, bins=num_bins)
 
     # Compute the individual histograms
@@ -186,16 +256,18 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
     hist_image1 = hist_image1.astype(float)
     hist_image2 = hist_image2.astype(float)
 
-    # Normalize the histograms
+    # Normalize the histograms: allowing histograms to be interpreted as probability distributions
     joint_histogram /= np.sum(joint_histogram)
     hist_image1 /= np.sum(hist_image1)
     hist_image2 /= np.sum(hist_image2)
 
-    # Compute the marginal entropies
+    # Compute the marginal entropies:
+    #    are useful because mutual information depends on the difference between the total uncertainty of 
+    #    each image individually and the joint uncertainty (of the two systems together).
     entropy_image1 = -np.sum(hist_image1 * np.log2(hist_image1 + np.finfo(float).eps))
     entropy_image2 = -np.sum(hist_image2 * np.log2(hist_image2 + np.finfo(float).eps))
 
-    # Compute the joint entropy
+    # Compute the joint entropy: is the amount of information shared between the two images
     entropy_joint = -np.sum(joint_histogram * np.log2(joint_histogram + np.finfo(float).eps))
 
     # Compute the mutual information
@@ -205,6 +277,8 @@ def calculate_mi(img_1_size, img_2_size, num_bins=256):
 
 
 def classify_similarity(value, reference, metric_name):
+    # TO IMPROVE: simplificar 
+
     if metric_name == 'ssim':
         diff = abs(value - reference)
         if diff == 0:

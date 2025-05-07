@@ -19,7 +19,6 @@ def process_form():
 
     image_1 = request.files['image_1']
     image_2 = request.files['image_2']
-    # TO IMPROVE: drag and drop - handle the upload in the input
 
     try:
         metrics = process_data(image_1, image_2)
