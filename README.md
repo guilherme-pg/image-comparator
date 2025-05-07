@@ -40,7 +40,7 @@ The result is an error value that represents the mean squared difference between
 
 ### **Histogram Comparison**
 <p align="center">
-  <img src="./static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;"/>
+  <img src="/static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;"/>
 </p></br>
 
 Histogram-based methods compare the distribution of pixel intensities in two images, and the result of the histogram comparison is a value that indicates similarity or dissimilarity.</br>
