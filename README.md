@@ -6,7 +6,7 @@ The user selects two images and clicks the 'compare images' button.</br>
 Then it is redirected to a page with metrics and statistics that evaluate the similarity or not between the images.
 
 <p align="center">
-  <img src="/static/images/land_page.png" alt="Land Page" style="height: 400px;"/>
+  <img src="./static/images/land_page.png" alt="Land Page" style="height: 400px;"/>
 </p>
 
 
@@ -40,7 +40,7 @@ The result is an error value that represents the mean squared difference between
 
 ### **Histogram Comparison**
 <p align="center">
-  <img src="/static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;"/>
+  <img src="./static/images/histogram_comparison.jpg" alt="Histogram Comparison" style="height: 400px;"/>
 </p></br>
 
 Histogram-based methods compare the distribution of pixel intensities in two images, and the result of the histogram comparison is a value that indicates similarity or dissimilarity.</br>
@@ -49,7 +49,7 @@ Some common techniques when using the histogram:Correlation, Chi-Square, Interse
 
 ### **Feature Extraction and Matching**
 <p align="center">
-  <img src="/static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 400px;"/>
+  <img src="./static/images/feature_em_matched_image.jpg" alt="Feature Extraction and Matching" style="height: 400px;"/>
 </p></br>
 
 This approach involves extracting features from images (e.g., keypoints, descriptors) and then matching them between the two images.</br>
